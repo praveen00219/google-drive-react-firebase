@@ -29,9 +29,12 @@ const Container = styled.div`
   width: 287.5px;
   height: 48px;
   display: flex;
+  padding-inline: 8px;
   align-items: center;
-  border: 1px solid rgba(0, 0, 0, 0.35);
-  border-radius: 4px;
+  background-color: #f0f3f8;
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  border-radius: 10px;
 
   svg {
     height: 24px;

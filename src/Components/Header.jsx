@@ -1,149 +1,167 @@
-import { Avatar, ButtonGroup } from "@mui/material";
 import React from "react";
 import styled from "styled-components";
-import SearchIcon from "@mui/icons-material/Search";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import AppsOutlinedIcon from "@mui/icons-material/AppsOutlined";
-import { useSelector } from "react-redux";
-import { selectPhoto } from "../Slices/user/userSlice";
-import { Link } from "react-router-dom";
+
+import {
+  Search,
+  Tune,
+  CheckCircleOutline,
+  HelpOutline,
+  Settings,
+  Apps,
+} from "@mui/icons-material";
+import { Avatar } from "@mui/material";
+
 import logo from "../assets/google-logo.png";
+
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { selectPhoto } from "../Slices/user/userSlice";
 
 function Header() {
   const photo = useSelector(selectPhoto);
-
   return (
-    <Container>
-      <Wrapper>
-        <Link to="/">
-          <Logo>
-            <img src={logo} alt={logo} />
-            <span>Drive</span>
-          </Logo>
-        </Link>
-        <InputContainer>
-          <SearchContainer>
-            <ButtonGroup>
-              <SearchIcon />
-            </ButtonGroup>
-            <input type="text" placeholder="Search in Drive" />
-          </SearchContainer>
-        </InputContainer>
+    <HeaderContainer>
+      <Link to="/">
+        <LogoContainer>
+          <img src={logo} alt="Drive Logo" />
+          <span>Drive</span>
+        </LogoContainer>
+      </Link>
 
-        <RightContainer>
-          <LeftSection>
-            <HelpOutlineIcon />
-            <SettingsOutlinedIcon />
-          </LeftSection>
-          <RightSection>
-            <AppsOutlinedIcon className="app" />
-            <Avatar src={photo} />
-          </RightSection>
-        </RightContainer>
-      </Wrapper>
-    </Container>
+      <SearchBarContainer>
+        <Search className="icon" />
+        <input type="text" placeholder="Search in Drive" />
+        <Tune className="icon" />
+      </SearchBarContainer>
+
+      <IconsContainer>
+        <CheckCircleOutline className="icon" />
+        <HelpOutline className="icon" />
+        <Settings className="icon" />
+        <Apps className="icon" />
+        <UserAvatar src={photo} alt="User Avatar" />
+      </IconsContainer>
+    </HeaderContainer>
   );
 }
 
 export default Header;
 
-const Container = styled.div`
-  position: sticky;
-  top: 0;
-  z-index: 999;
-  background-color: #ffffff;
-  padding: 2px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-`;
-
-const Wrapper = styled.div`
+const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 10px 20px;
+  padding: 2px 16px;
+  height: 60px;
+  font-family: Arial, sans-serif;
+
+  // @media (max-width: 768px) {
+  //   flex-direction: column;
+  //   height: auto;
+  //   padding: 8px;
+  // }
 `;
 
-const Logo = styled.div`
+const LogoContainer = styled.div`
   display: flex;
   align-items: center;
+  margin-left: 15px;
 
   img {
-    width: 40px;
     height: 40px;
+    margin-right: 8px;
   }
 
   span {
-    font-family: "Product Sans", Arial, sans-serif;
-    color: #5f6368;
     font-size: 22px;
-    padding-left: 8px;
+    font-weight: 500;
+    color: #202124;
+  }
+
+  @media (max-width: 768px) {
+    margin-bottom: 8px;
+  }
+
+  @media (max-width: 480px) {
+    img {
+      height: 24px;
+    }
+
+    span {
+      font-size: 16px;
+    }
   }
 `;
 
-const InputContainer = styled.div`
+const SearchBarContainer = styled.div`
+  display: flex;
+  align-items: center;
   flex: 1;
-`;
+  max-width: 680px;
+  height: 40px;
+  background-color: #e9edf6;
+  border-radius: 40px;
+  padding: 3px 12px;
+  margin: 0 16px;
 
-const RightContainer = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const SearchContainer = styled.div`
-  width: 64%;
-  height: 50px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.09);
-  border-radius: 8px;
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 /0.05);
-
-  svg {
-    margin-left: 10px;
-    color: #5f6368;
+  .icon {
+    color: #44464a;
   }
 
   input {
-    font-size: 16px;
-    width: 90%;
-    height: 80%;
-    font-family: Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
-    margin: 0 auto;
-    background-color: transparent;
-    :focus {
-      outline: none;
-    }
-
+    flex: 1;
     border: none;
+    outline: none;
+    background: none;
+    margin: 0 8px;
+    font-size: 14px;
+    color: #202124;
+  }
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+    margin: 8px 0;
+  }
+
+  @media (max-width: 480px) {
+    input {
+      font-size: 12px;
+    }
   }
 `;
 
-const RightSection = styled.div`
+const IconsContainer = styled.div`
   display: flex;
   align-items: center;
 
-  svg {
-    color: #5f6368;
-    padding: 5px;
+  .icon {
+    color: #44464a;
+    margin: 0 10px;
     cursor: pointer;
-    border-radius: 50%;
-    transition: all 200ms ease-out;
-    :hover {
-      background-color: rgba(0, 0, 0, 0.09);
+  }
+
+  @media (max-width: 768px) {
+    .icon {
+      margin: 0 4px;
     }
   }
 
-  .app {
-    margin-right: 15px;
+  @media (max-width: 480px) {
+    .icon {
+      margin: 0 2px;
+    }
   }
 `;
 
-const LeftSection = styled(RightSection)`
-  margin-right: 40px;
+const UserAvatar = styled.img`
+  height: 32px;
+  width: 32px;
+  margin-left: 5px;
+  border-radius: 50%;
+  cursor: pointer;
 
-  svg {
-    margin: 0 10px;
+  @media (max-width: 480px) {
+    height: 22px;
+    width: 22px;
   }
 `;
