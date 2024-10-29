@@ -14,6 +14,10 @@ import { selectUid, setLogIn, setLogOut } from "./Slices/user/userSlice";
 import Login from "./Components/Login";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase/firebase";
+import StarredFiles from "./Components/StarredFiles";
+import Bin from "./Components/Bin";
+import Recent from "./Components/Recent";
+import PageNotFound from "./Components/PageNotFound";
 
 function App() {
   const user = useSelector(selectUid);
@@ -38,7 +42,12 @@ function App() {
             <SideBar />
             <Routes>
               <Route path="/" element={<Drive />} />
+              <Route path="/my-drive" element={<Drive />} />
               <Route path="/folder/:name/:id" element={<Folder />} />
+              <Route path="/starred" element={<StarredFiles />} />
+              <Route path="/recent" element={<Recent />} />
+              <Route path="/bin" element={<Bin />} />
+              <Route path="*" element={<PageNotFound />} />
             </Routes>
           </Container>
           <Model />

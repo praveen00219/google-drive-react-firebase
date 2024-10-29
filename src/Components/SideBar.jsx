@@ -1,9 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-
+import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setBoolean } from "../Slices/Bool/boolSlice";
-
 import { Folder, Computer, AccessTime, Report } from "@mui/icons-material";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
@@ -13,6 +12,7 @@ import FilterDramaIcon from "@mui/icons-material/FilterDrama";
 
 function Sidebar() {
   const dispatch = useDispatch();
+
   return (
     <SidebarContainer>
       <NewChannel onClick={() => dispatch(setBoolean({ modelBools: true }))}>
@@ -20,41 +20,42 @@ function Sidebar() {
           New
         </span>
       </NewChannel>
-      <NavItem>
+
+      <NavItem to="/" exact>
         <HomeOutlinedIcon className="icon" />
         <span>Home</span>
       </NavItem>
-      <NavItem active>
+      <NavItem to="/my-drive">
         <Folder className="icon" />
         <span>My Drive</span>
       </NavItem>
-      <NavItem>
+      <NavItem to="/computers">
         <Computer className="icon" />
         <span>Computers</span>
       </NavItem>
       <Divider />
-      <NavItem>
+      <NavItem to="/shared">
         <PeopleAltOutlinedIcon className="icon" />
         <span>Shared with me</span>
       </NavItem>
-      <NavItem>
+      <NavItem to="/recent">
         <AccessTime className="icon" />
         <span>Recent</span>
       </NavItem>
-      <NavItem>
+      <NavItem to="/starred">
         <StarBorderOutlinedIcon className="icon" />
         <span>Starred</span>
       </NavItem>
       <Divider />
-      <NavItem>
+      <NavItem to="/spam">
         <Report className="icon" />
         <span>Spam</span>
       </NavItem>
-      <NavItem>
+      <NavItem to="/bin">
         <DeleteOutlinedIcon className="icon" />
         <span>Bin</span>
       </NavItem>
-      <NavItem>
+      <NavItem to="/storage">
         <FilterDramaIcon className="icon" />
         <span>Storage</span>
       </NavItem>
@@ -105,20 +106,24 @@ const NewChannel = styled.div`
   }
 `;
 
-const NavItem = styled.div`
+const NavItem = styled(NavLink)`
   display: flex;
   align-items: center;
   padding: 5px 16px;
   font-size: 14px;
   color: #202124;
   cursor: pointer;
-  background-color: ${({ active }) => (active ? "#c3e7ff" : "transparent")};
   border-radius: 40px;
   transition: background-color 0.2s ease;
+  text-decoration: none;
 
   .icon {
     margin-right: 10px;
     color: #474848;
+  }
+
+  &.active {
+    background-color: #c3e7ff;
   }
 
   &:hover {
