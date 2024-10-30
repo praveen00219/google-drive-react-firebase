@@ -18,6 +18,8 @@ import StarredFiles from "./Components/StarredFiles";
 import Bin from "./Components/Bin";
 import Recent from "./Components/Recent";
 import PageNotFound from "./Components/PageNotFound";
+import GoogleOnePlans from "./Components/GoogleOnePlans";
+import DriveNotLogged from "./Components/DriveNotLogged";
 
 function App() {
   const user = useSelector(selectUid);
@@ -26,7 +28,7 @@ function App() {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        dispatch(setLogIn({ uid: user.uid, photo: user.photoURL }));
+        // dispatch(setLogIn({ uid: user.uid, photo: user.photoURL }));
       } else {
         dispatch(setLogOut({ uid: null, photo: null }));
       }
@@ -35,7 +37,7 @@ function App() {
 
   return (
     <Router>
-      <Header />
+      <Header user={user} />
       {user ? (
         <>
           <Container>
@@ -47,6 +49,7 @@ function App() {
               <Route path="/starred" element={<StarredFiles />} />
               <Route path="/recent" element={<Recent />} />
               <Route path="/bin" element={<Bin />} />
+              <Route path="/storage" element={<GoogleOnePlans />} />
               <Route path="*" element={<PageNotFound />} />
             </Routes>
           </Container>
@@ -56,7 +59,11 @@ function App() {
           <PhotoDisplay />
         </>
       ) : (
-        <Login />
+        <Routes>
+          <Route path="/driveNotLogged" element={<DriveNotLogged />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+        // <Login />
       )}
     </Router>
   );

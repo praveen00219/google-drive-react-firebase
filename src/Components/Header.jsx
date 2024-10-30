@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-
 import {
   Search,
   Tune,
@@ -8,39 +7,118 @@ import {
   HelpOutline,
   Settings,
   Apps,
+  ExitToApp,
+  AccountCircle,
 } from "@mui/icons-material";
-import { Avatar } from "@mui/material";
+import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
+import { Avatar, Popover, Typography, IconButton } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  selectPhoto,
+  selectUid,
+  setLogIn,
+  setLogOut,
+} from "../Slices/user/userSlice";
 
 import logo from "../assets/google-logo.png";
 
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { selectPhoto } from "../Slices/user/userSlice";
-
 function Header() {
+  const dispatch = useDispatch();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const navigate = useNavigate();
+
   const photo = useSelector(selectPhoto);
+  const userUid = useSelector(selectUid); // Changed the name to avoid confusion
+  console.log("uID : ", userUid); // output : null -> when user not login
+
+  const handleAvatarClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogOut = () => {
+    dispatch(setLogOut({ uid: null, photo: null }));
+    setAnchorEl(null);
+    navigate("/login");
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
   return (
     <HeaderContainer>
-      <Link to="/">
-        <LogoContainer>
-          <img src={logo} alt="Drive Logo" />
-          <span>Drive</span>
-        </LogoContainer>
-      </Link>
+      <>
+        <Link to="/drive">
+          <LogoContainer>
+            <img src={logo} alt="Drive Logo" />
+            <span>Drive</span>
+          </LogoContainer>
+        </Link>
+      </>
 
-      <SearchBarContainer>
-        <Search className="icon" />
-        <input type="text" placeholder="Search in Drive" />
-        <Tune className="icon" />
-      </SearchBarContainer>
+      {userUid ? ( // Conditional rendering based on userUid
+        <>
+          <SearchBarContainer>
+            <Search className="icon" />
+            <input type="text" placeholder="Search in Drive" />
+            <Tune className="icon" />
+          </SearchBarContainer>
 
-      <IconsContainer>
-        <CheckCircleOutline className="icon" />
-        <HelpOutline className="icon" />
-        <Settings className="icon" />
-        <Apps className="icon" />
-        <UserAvatar src={photo} alt="User Avatar" />
-      </IconsContainer>
+          <IconsContainer>
+            <CheckCircleOutline className="icon" />
+            <HelpOutline className="icon" />
+            <Settings className="icon" />
+            <Apps className="icon" />
+            <div>
+              <IconButton onClick={handleAvatarClick}>
+                <img
+                  src={photo}
+                  alt="User Avatar"
+                  className="w-8 h-8 rounded-full cursor-pointer"
+                />
+              </IconButton>
+              <ExpandMoreOutlinedIcon
+                onClick={handleAvatarClick}
+                className="-ml-2"
+              />
+            </div>
+          </IconsContainer>
+
+          <Popover
+            id={id}
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+          >
+            <PopoverContent>
+              <MenuItem onClick={() => alert("Account Settings")}>
+                <AccountCircle fontSize="small" /> Account Settings
+              </MenuItem>
+              <MenuItem onClick={handleLogOut}>
+                <ExitToApp fontSize="small" /> Logout
+              </MenuItem>
+            </PopoverContent>
+          </Popover>
+        </>
+      ) : (
+        <ul className="flex gap-10 text-gray-600 mx-10">
+          <li className="hover:text-blue-500 cursor-pointer">Individuals</li>
+          <li className="hover:text-blue-500 cursor-pointer">Teams</li>
+          <li className="hover:text-blue-500 cursor-pointer">Enterprise</li>
+        </ul>
+      )}
     </HeaderContainer>
   );
 }
@@ -50,16 +128,10 @@ export default Header;
 const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: ${({ userUid }) => (userUid ? "space-between" : "initial")};
   padding: 2px 16px;
   height: 60px;
   font-family: Arial, sans-serif;
-
-  // @media (max-width: 768px) {
-  //   flex-direction: column;
-  //   height: auto;
-  //   padding: 8px;
-  // }
 `;
 
 const LogoContainer = styled.div`
@@ -76,20 +148,6 @@ const LogoContainer = styled.div`
     font-size: 22px;
     font-weight: 500;
     color: #202124;
-  }
-
-  @media (max-width: 768px) {
-    margin-bottom: 8px;
-  }
-
-  @media (max-width: 480px) {
-    img {
-      height: 24px;
-    }
-
-    span {
-      font-size: 16px;
-    }
   }
 `;
 
@@ -117,17 +175,6 @@ const SearchBarContainer = styled.div`
     font-size: 14px;
     color: #202124;
   }
-
-  @media (max-width: 768px) {
-    max-width: 100%;
-    margin: 8px 0;
-  }
-
-  @media (max-width: 480px) {
-    input {
-      font-size: 12px;
-    }
-  }
 `;
 
 const IconsContainer = styled.div`
@@ -139,29 +186,34 @@ const IconsContainer = styled.div`
     margin: 0 10px;
     cursor: pointer;
   }
-
-  @media (max-width: 768px) {
-    .icon {
-      margin: 0 4px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .icon {
-      margin: 0 2px;
-    }
-  }
 `;
 
-const UserAvatar = styled.img`
-  height: 32px;
-  width: 32px;
-  margin-left: 5px;
-  border-radius: 50%;
-  cursor: pointer;
+// const UserAvatar = styled.img`
+//   height: 32px;
+//   width: 32px;
+//   border-radius: 50%;
+//   cursor: pointer;
+// `;
 
-  @media (max-width: 480px) {
-    height: 22px;
-    width: 22px;
+const PopoverContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+`;
+
+const MenuItem = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #44464a;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+
+  svg {
+    margin-right: 8px;
   }
 `;
