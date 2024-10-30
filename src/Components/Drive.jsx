@@ -55,7 +55,7 @@ function Drive() {
         <GridContainer>
           {fileData?.map((data) => {
             const file = data.data();
-            console.log(file);
+            // console.log(file);
             return (
               <FileList
                 img={file.Image}

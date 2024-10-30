@@ -10,8 +10,12 @@ import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 
-import { useDispatch } from "react-redux";
-import { setPhotoDisplay } from "../Slices/photodisplay/photoSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setPhotoDisplay,
+  moveToBin,
+  selectBinItems,
+} from "../Slices/photodisplay/photoSlice";
 
 function FileList({ img, title }) {
   const dispatch = useDispatch();
@@ -19,6 +23,15 @@ function FileList({ img, title }) {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef();
   const favRef = useRef();
+
+  const binItems = useSelector(selectBinItems); // Select bin items
+
+  const imgData = {
+    img: img,
+    title: title,
+  };
+
+  // const imgId = useSelector(photosle);
 
   const PhotoSelector = () => {
     dispatch(setPhotoDisplay({ photo: img, title }));
@@ -49,9 +62,12 @@ function FileList({ img, title }) {
   };
 
   const handleMoveToBin = () => {
-    console.log("Move to bin clicked");
+    dispatch(moveToBin(imgData));
     setShowMenu(false);
   };
+
+  // Check if the image is in the bin
+  const isInBin = binItems.some((item) => item.img === img);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -67,66 +83,70 @@ function FileList({ img, title }) {
   }, []);
 
   return (
-    <CardContainer onClick={PhotoSelector}>
-      <ImageContainer>
-        <img src={img} alt={title} />
-      </ImageContainer>
-      <FileInfo>
-        <FileTitle>
-          <InsertPhoto className="iconPhoto" />
-          {title}
-        </FileTitle>
-        <Actions>
-          <StarBorderOutlinedIcon
-            className="fav"
-            style={{ fontSize: "18px" }}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleFavorite();
-            }}
-            ref={favRef}
-          />
-          <MoreIcon
-            onMouseEnter={() => setShowTooltip(true)}
-            onMouseLeave={() => setShowTooltip(false)}
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowTooltip(false);
-              openMenu();
-            }}
-            ref={menuRef}
-          >
-            <MoreVertIcon style={{ fontSize: "20px", color: "#5f6368" }} />
-            {showTooltip && <Tooltip>More Actions</Tooltip>}
-            {showMenu && (
-              <Menu>
-                <MenuItem onClick={PhotoSelector}>
-                  <ZoomOutMapOutlinedIcon className="icon" />
-                  Open with
-                </MenuItem>
-                <MenuItem onClick={handleDownload}>
-                  <FileDownloadOutlinedIcon className="icon" />
-                  Download
-                </MenuItem>
-                <MenuItem onClick={handleRename}>
-                  <DriveFileRenameOutlineOutlinedIcon className="icon" />
-                  Rename
-                </MenuItem>
-                <MenuItem onClick={handleShare}>
-                  <ShareOutlinedIcon className="icon" />
-                  Share
-                </MenuItem>
+    <>
+      {!isInBin && (
+        <CardContainer onClick={PhotoSelector}>
+          <ImageContainer>
+            <img src={img} alt={title} />
+          </ImageContainer>
+          <FileInfo>
+            <FileTitle>
+              <InsertPhoto className="iconPhoto" />
+              {title}
+            </FileTitle>
+            <Actions>
+              <StarBorderOutlinedIcon
+                className="fav"
+                style={{ fontSize: "18px" }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleFavorite();
+                }}
+                ref={favRef}
+              />
+              <MoreIcon
+                onMouseEnter={() => setShowTooltip(true)}
+                onMouseLeave={() => setShowTooltip(false)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowTooltip(false);
+                  openMenu();
+                }}
+                ref={menuRef}
+              >
+                <MoreVertIcon style={{ fontSize: "20px", color: "#5f6368" }} />
+                {showTooltip && <Tooltip>More Actions</Tooltip>}
+                {showMenu && (
+                  <Menu>
+                    <MenuItem onClick={PhotoSelector}>
+                      <ZoomOutMapOutlinedIcon className="icon" />
+                      Open with
+                    </MenuItem>
+                    <MenuItem onClick={handleDownload}>
+                      <FileDownloadOutlinedIcon className="icon" />
+                      Download
+                    </MenuItem>
+                    <MenuItem onClick={handleRename}>
+                      <DriveFileRenameOutlineOutlinedIcon className="icon" />
+                      Rename
+                    </MenuItem>
+                    <MenuItem onClick={handleShare}>
+                      <ShareOutlinedIcon className="icon" />
+                      Share
+                    </MenuItem>
 
-                <MenuItem onClick={handleMoveToBin}>
-                  <DeleteOutlinedIcon className="icon" />
-                  Move to bin
-                </MenuItem>
-              </Menu>
-            )}
-          </MoreIcon>
-        </Actions>
-      </FileInfo>
-    </CardContainer>
+                    <MenuItem onClick={handleMoveToBin}>
+                      <DeleteOutlinedIcon className="icon" />
+                      Move to bin
+                    </MenuItem>
+                  </Menu>
+                )}
+              </MoreIcon>
+            </Actions>
+          </FileInfo>
+        </CardContainer>
+      )}
+    </>
   );
 }
 

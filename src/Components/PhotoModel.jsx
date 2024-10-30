@@ -18,6 +18,7 @@ import { selectUid } from "../Slices/user/userSlice";
 function PhotoModel() {
   const [input, setInput] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
   const ImageRef = useRef(null);
   const Photo = useSelector(selectPhotoBool);
   const [loading, setLoading] = useState(false);
@@ -32,7 +33,14 @@ function PhotoModel() {
     if (loading) return;
     setLoading(true);
 
-    if (input.length < 1) return;
+    // Check if both fields are empty
+    if (!selectedImage) {
+      setErrorMessage("Please choose a file from local.");
+      setLoading(false);
+      return;
+    }
+
+    setErrorMessage(""); // Clear error message if fields are valid
 
     if (folderId) {
       const doces = await addDoc(
@@ -81,6 +89,13 @@ function PhotoModel() {
     dispatch(setBoolean({ photo: false }));
   };
 
+  // const closeModel = () => {
+  // setSelectedImage(null);
+  // setInput("");
+  // setLoading(false);
+  //   dispatch(setBoolean({ photo: false }));
+  // };
+
   const SelectImages = (e) => {
     const Reader = new FileReader();
 
@@ -95,10 +110,15 @@ function PhotoModel() {
 
   return (
     <Container show={Photo}>
-      <CloseIcon>
-        <Close onClick={() => dispatch(setBoolean({ photo: false }))} />
-      </CloseIcon>
       <Wrapper onSubmit={Submit}>
+        <CloseIcon>
+          <Close
+            onClick={() => {
+              dispatch(setBoolean({ photo: false }));
+              setSelectedImage(null);
+            }}
+          />
+        </CloseIcon>
         <ImageContainer>
           {selectedImage ? (
             <img
@@ -109,18 +129,20 @@ function PhotoModel() {
           ) : (
             <CameraContainer>
               <CameraAlt onClick={() => ImageRef.current.click()} />
+              <h3>Take file</h3>
             </CameraContainer>
           )}
           <input type="file" hidden ref={ImageRef} onChange={SelectImages} />
         </ImageContainer>
-        <TextContainer>
+        <InputContainer>
           <input
             type="text"
-            placeholder="Enter photo Title"
+            placeholder="Enter photo Title (Optional)"
             value={input}
             onChange={(e) => setInput(e.target.value)}
           />
-        </TextContainer>
+        </InputContainer>
+        {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
         <ButtonContainer>
           <button onClick={Submit} disabled={loading}>
             {loading ? "Submitting..." : "Submit"}
@@ -140,7 +162,7 @@ const Container = styled.div`
   bottom: 0;
   right: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -148,7 +170,7 @@ const Container = styled.div`
 `;
 
 const Wrapper = styled.form`
-  height: 400px;
+  height: 300px;
   width: 400px;
   background-color: white;
   border-radius: 20px;
@@ -168,20 +190,18 @@ const ImageContainer = styled.div`
   }
 `;
 
-const TextContainer = styled.div`
-  flex: 1;
-  border-bottom: 1px solid black;
-  margin: 0 20px;
-  margin-top: 27px;
+const InputContainer = styled.div`
+  display: flex;
+  margin: 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   input {
-    display: flex;
+    flex: 1;
     border: none;
-    font-size: 18px;
-    text-transform: capitalize;
-    width: 100%;
-    border: none;
-    :focus {
-      outline: none;
+    padding: 8px;
+    font-size: 16px;
+    outline: none;
+    &:focus {
+      border-bottom: 1px solid #3b82f6;
     }
   }
 `;
@@ -195,15 +215,12 @@ const ButtonContainer = styled.div`
     border-radius: 4px;
     cursor: pointer;
     border: none;
-    box-shadow: 0 1px 2px 0 rgb(0 0 0 /0.05);
     background-color: #3b82f6;
     color: white;
     transition: all 200ms ease-out;
-
     :hover {
-      transform: scale(1.001);
+      transform: scale(1.05);
     }
-
     :active {
       transform: scale(1.009);
     }
@@ -213,14 +230,27 @@ const ButtonContainer = styled.div`
 const CameraContainer = styled.div`
   display: flex;
   align-items: center;
+  flex-direction: column;
   justify-content: center;
   height: 100%;
-
+  h3 {
+    color: #3b82f6;
+  }
   .MuiSvgIcon-root {
-    width: 2.5rem !important;
-    height: 2.5rem;
+    margin-top: 30px;
+    width: 5rem !important;
+    height: 5rem;
+    padding: 12px;
     color: rgba(0, 0, 0, 0.5);
     cursor: pointer;
+    border: 1px solid #3b82f6;
+    border-radius: 40px;
+    :hover {
+      transform: scale(1.02);
+    }
+    :active {
+      transform: scale(1.009);
+    }
   }
 `;
 
@@ -228,11 +258,23 @@ const CloseIcon = styled.div`
   position: absolute;
   top: 10px;
   right: 10px;
-
   svg {
     cursor: pointer;
     width: 2rem;
     height: 2rem;
-    color: white;
+    color: rgba(150, 0, 0, 0.9);
+    :hover {
+      transform: scale(1.05);
+    }
+    :active {
+      transform: scale(1.009);
+    }
   }
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+  text-align: start;
+  margin: 0 20px 10px;
+  font-size: 0.9rem;
 `;
