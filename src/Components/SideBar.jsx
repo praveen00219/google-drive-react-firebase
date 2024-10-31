@@ -21,7 +21,7 @@ function Sidebar() {
         </span>
       </NewChannel>
 
-      <NavItem to="/" exact>
+      <NavItem to="/home" exact>
         <HomeOutlinedIcon className="icon" />
         <span>Home</span>
       </NavItem>

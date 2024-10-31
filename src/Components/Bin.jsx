@@ -5,9 +5,12 @@ import styled from "styled-components";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { InsertPhoto } from "@mui/icons-material";
 import ZoomOutMapOutlinedIcon from "@mui/icons-material/ZoomOutMapOutlined";
-import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import IosShareOutlinedIcon from "@mui/icons-material/IosShareOutlined";
 
-import { selectBinItems } from "../Slices/photodisplay/photoSlice";
+import {
+  restoreToDrive,
+  selectBinItems,
+} from "../Slices/photodisplay/photoSlice";
 
 function Bin() {
   const binItems = useSelector(selectBinItems);
@@ -21,8 +24,9 @@ function Bin() {
     setSelectedItem({ img, title });
   };
 
-  const handleRestoreToDrive = () => {
-    // Logic to restore item
+  const handleRestoreToDrive = (item) => {
+    // Dispatch the restore action with the item to be restored
+    dispatch(restoreToDrive(item));
   };
 
   // Close menu when clicking outside
@@ -75,8 +79,8 @@ function Bin() {
                           <ZoomOutMapOutlinedIcon className="icon" />
                           Open with
                         </MenuItem>
-                        <MenuItem onClick={handleRestoreToDrive}>
-                          <DeleteOutlinedIcon className="icon" />
+                        <MenuItem onClick={() => handleRestoreToDrive(item)}>
+                          <IosShareOutlinedIcon className="icon" />
                           Restore to Drive
                         </MenuItem>
                       </Menu>

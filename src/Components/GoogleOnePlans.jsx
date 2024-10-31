@@ -3,8 +3,8 @@ import React from "react";
 const GoogleOnePlans = () => {
   return (
     <div className="flex-1">
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-        <div className="bg-white shadow-lg rounded-lg p-6 max-w-2xl w-full">
+      <div className="min-h-[80vh] flex items-center justify-center p-4">
+        <div className="bg-white shadow-sm rounded-lg p-6 max-w-full w-full">
           <h1 className="text-2xl font-semibold text-center mb-4">
             Try Google One at a discount
           </h1>

@@ -52,6 +52,7 @@ function Drive() {
           </GridContainer>
         </Margin>
 
+        <SemiTitle className="mt-3">Post</SemiTitle>
         <GridContainer>
           {fileData?.map((data) => {
             const file = data.data();

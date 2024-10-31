@@ -43,7 +43,7 @@ function App() {
           <Container>
             <SideBar />
             <Routes>
-              <Route path="/" element={<Drive />} />
+              <Route path="/home" element={<Drive />} />
               <Route path="/my-drive" element={<Drive />} />
               <Route path="/folder/:name/:id" element={<Folder />} />
               <Route path="/starred" element={<StarredFiles />} />
@@ -60,7 +60,8 @@ function App() {
         </>
       ) : (
         <Routes>
-          <Route path="/driveNotLogged" element={<DriveNotLogged />} />
+          <Route path="/" element={<DriveNotLogged />} />
+          <Route path="/drive" element={<DriveNotLogged />} />
           <Route path="/login" element={<Login />} />
         </Routes>
         // <Login />

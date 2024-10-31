@@ -19,7 +19,7 @@ function Login() {
       let user = res.user;
       dispatch(setLogIn({ uid: user.uid, photo: user.photoURL }));
       setShowConfirm(false); // Close modal on successful sign-in
-      navigate("/");
+      navigate("/home");
     });
   };
 
@@ -97,7 +97,7 @@ function Login() {
           )}
         </div>
         <span className="mt-24">
-          <Link to="/driveNotLogged">
+          <Link to="/drive">
             <KeyboardBackspaceOutlinedIcon className="text-blue-500" />
             <button className="text-md text-blue-500 px-1 py-1 rounded-md bg-gray-50 hover:text-blue-600">
               Back

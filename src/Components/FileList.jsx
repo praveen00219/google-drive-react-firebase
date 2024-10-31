@@ -47,7 +47,12 @@ function FileList({ img, title }) {
   };
 
   const handleDownload = () => {
-    console.log("Download path clicked");
+    const link = document.createElement("a");
+    link.href = img; // The image URL
+    link.download = title; // Use the title as the filename
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
     setShowMenu(false);
   };
 
