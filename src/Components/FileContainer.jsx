@@ -26,7 +26,7 @@ function FileContainer({ title, id }) {
 export default FileContainer;
 
 const Container = styled.div`
-  width: 287.5px;
+  max-width: 287.5px;
   height: 48px;
   display: flex;
   padding-inline: 8px;

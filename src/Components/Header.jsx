@@ -23,6 +23,11 @@ import {
 
 import logo from "../assets/google-logo.png";
 
+import ImageSliderModal from "./ImageSliderModal"; // import the modal component
+// import image1 from "../assets/image1.jpg"; // replace with actual paths
+// import image2 from "../assets/image2.jpg";
+// import image3 from "../assets/image3.jpg";
+
 function Header() {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -30,6 +35,18 @@ function Header() {
 
   const photo = useSelector(selectPhoto);
   const userUid = useSelector(selectUid);
+
+  // Inside your Header function
+  const images = [];
+  const [isHelpModalOpen, setHelpModalOpen] = useState(false);
+
+  const handleHelperModel = () => {
+    setHelpModalOpen(true);
+  };
+
+  const closeHelpModal = () => {
+    setHelpModalOpen(false);
+  };
 
   const handleAvatarClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -67,7 +84,9 @@ function Header() {
 
           <IconsContainer>
             <CheckCircleOutline className="checkIcon" />
-            <HelpOutline className="helpIcon" />
+
+            <HelpOutline className="helpIcon" onClick={handleHelperModel} />
+
             {/* <Settings className="icon" /> */}
             <Apps className="icon" />
             <div>
@@ -116,6 +135,13 @@ function Header() {
           <li>Enterprise</li>
         </ResponsiveMenu>
       )}
+
+      {/* Image Slider Modal for Helper */}
+      <ImageSliderModal
+        images={images}
+        open={isHelpModalOpen}
+        onClose={closeHelpModal}
+      />
     </HeaderContainer>
   );
 }
