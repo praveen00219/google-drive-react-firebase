@@ -32,6 +32,10 @@ A Google Drive Clone built with **React**, **Vite**, **Redux**, **Tailwind CSS**
 - **Styling**: Tailwind CSS, Styled Components, Material-ui/material-icons
 - **Backend**: Firebase (for authentication, storage, and database management)
 
+## Live Demo
+
+Click here : [HERE](https://praveen-google-drive-react.netlify.app/)
+
 ## Getting Started
 
 ### Prerequisites
