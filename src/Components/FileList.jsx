@@ -156,10 +156,10 @@ function FileList({ img, title }) {
 }
 
 export default FileList;
-
+// Styled components with responsive adjustments
 const CardContainer = styled.div`
-  width: 300px;
-  height: 280px;
+  max-width: 300px;
+  max-height: 280px;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
@@ -173,6 +173,17 @@ const CardContainer = styled.div`
   &:hover {
     box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.3);
     transform: translateY(-1px);
+  }
+
+  @media (max-width: 768px) {
+    max-width: 220px;
+    max-height: 240px;
+  }
+
+  @media (max-width: 480px) {
+    max-width: 180px;
+    max-height: 220px;
+    margin: 5px;
   }
 `;
 
@@ -199,6 +210,14 @@ const FileInfo = styled.div`
   justify-content: space-between;
   padding: 8px 12px;
   position: relative;
+
+  @media (max-width: 768px) {
+    padding: 3px 3px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 2px 3px;
+  }
 `;
 
 const FileTitle = styled.div`
@@ -211,7 +230,12 @@ const FileTitle = styled.div`
 
   .iconPhoto {
     color: #4285f4;
+    max-width: 16px;
     margin-right: 4px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 12px;
   }
 `;
 
@@ -245,6 +269,12 @@ const MoreIcon = styled.div`
     background-color: rgba(95, 99, 104, 0.1);
     border-radius: 50%;
   }
+
+  @media (max-width: 480px) {
+    svg {
+      font-size: 18px;
+    }
+  }
 `;
 
 const Tooltip = styled.div`
@@ -270,6 +300,11 @@ const Tooltip = styled.div`
     border-style: solid;
     border-color: #333 transparent transparent transparent;
   }
+
+  @media (max-width: 480px) {
+    font-size: 10px;
+    padding: 4px 6px;
+  }
 `;
 
 const Menu = styled.div`
@@ -283,6 +318,10 @@ const Menu = styled.div`
   border-radius: 8px;
   overflow: hidden;
   z-index: 10;
+
+  @media (max-width: 480px) {
+    width: 150px;
+  }
 `;
 
 const MenuItem = styled.div`
@@ -302,5 +341,14 @@ const MenuItem = styled.div`
   .icon {
     font-size: 18px;
     margin-right: 5px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 8px 12px;
+    font-size: 12px;
+
+    .icon {
+      font-size: 16px;
+    }
   }
 `;

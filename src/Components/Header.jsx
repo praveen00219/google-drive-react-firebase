@@ -29,8 +29,7 @@ function Header() {
   const navigate = useNavigate();
 
   const photo = useSelector(selectPhoto);
-  const userUid = useSelector(selectUid); // Changed the name to avoid confusion
-  console.log("uID : ", userUid); // output : null -> when user not login
+  const userUid = useSelector(selectUid);
 
   const handleAvatarClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -51,16 +50,14 @@ function Header() {
 
   return (
     <HeaderContainer>
-      <>
-        <Link to="/drive">
-          <LogoContainer>
-            <img src={logo} alt="Drive Logo" />
-            <span>Drive</span>
-          </LogoContainer>
-        </Link>
-      </>
+      <Link to="/drive">
+        <LogoContainer>
+          <img src={logo} alt="Drive Logo" />
+          <span>Drive</span>
+        </LogoContainer>
+      </Link>
 
-      {userUid ? ( // Conditional rendering based on userUid
+      {userUid ? (
         <>
           <SearchBarContainer>
             <Search className="icon" />
@@ -69,9 +66,9 @@ function Header() {
           </SearchBarContainer>
 
           <IconsContainer>
-            <CheckCircleOutline className="icon" />
-            <HelpOutline className="icon" />
-            <Settings className="icon" />
+            <CheckCircleOutline className="checkIcon" />
+            <HelpOutline className="helpIcon" />
+            {/* <Settings className="icon" /> */}
             <Apps className="icon" />
             <div>
               <IconButton onClick={handleAvatarClick}>
@@ -113,11 +110,11 @@ function Header() {
           </Popover>
         </>
       ) : (
-        <ul className="flex gap-10 text-gray-600 mx-10">
-          <li className="hover:text-blue-500 cursor-pointer">Individuals</li>
-          <li className="hover:text-blue-500 cursor-pointer">Teams</li>
-          <li className="hover:text-blue-500 cursor-pointer">Enterprise</li>
-        </ul>
+        <ResponsiveMenu>
+          <li>Individuals</li>
+          <li>Teams</li>
+          <li>Enterprise</li>
+        </ResponsiveMenu>
       )}
     </HeaderContainer>
   );
@@ -129,9 +126,18 @@ const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: ${({ userUid }) => (userUid ? "space-between" : "initial")};
+  gap: 1rem;
   padding: 2px 16px;
   height: 60px;
   font-family: Arial, sans-serif;
+
+  @media (max-width: 768px) {
+    padding: 8px;
+  }
+  // @media (max-width: 480px) {
+  //   flex-direction: column;
+  //   height: auto;
+  // }
 `;
 
 const LogoContainer = styled.div`
@@ -140,14 +146,17 @@ const LogoContainer = styled.div`
   margin-left: 15px;
 
   img {
-    height: 40px;
+    height: 30px;
     margin-right: 8px;
   }
 
   span {
-    font-size: 22px;
+    font-size: 18px;
     font-weight: 500;
     color: #202124;
+    @media (max-width: 480px) {
+      display: none;
+    }
   }
 `;
 
@@ -160,7 +169,6 @@ const SearchBarContainer = styled.div`
   background-color: #e9edf6;
   border-radius: 40px;
   padding: 3px 12px;
-  margin: 0 16px;
 
   .icon {
     color: #44464a;
@@ -174,6 +182,13 @@ const SearchBarContainer = styled.div`
     margin: 0 8px;
     font-size: 14px;
     color: #202124;
+    @media (max-width: 480px) {
+      font-size: 12px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    max-width: 100%;
   }
 `;
 
@@ -181,19 +196,33 @@ const IconsContainer = styled.div`
   display: flex;
   align-items: center;
 
+  .helpIcon {
+    color: #44464a;
+    margin: 0 10px;
+    cursor: pointer;
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  .checkIcon {
+    color: #44464a;
+    margin: 0 10px;
+    cursor: pointer;
+    @media (max-width: 630px) {
+      display: none;
+    }
+  }
+
   .icon {
     color: #44464a;
     margin: 0 10px;
     cursor: pointer;
+    @media (max-width: 630px) {
+      display: none;
+    }
   }
 `;
-
-// const UserAvatar = styled.img`
-//   height: 32px;
-//   width: 32px;
-//   border-radius: 50%;
-//   cursor: pointer;
-// `;
 
 const PopoverContent = styled.div`
   display: flex;
@@ -215,5 +244,23 @@ const MenuItem = styled.div`
 
   svg {
     margin-right: 8px;
+  }
+`;
+
+const ResponsiveMenu = styled.ul`
+  display: flex;
+  gap: 10px;
+  text-align: center;
+  color: #5f6368;
+  @media (max-width: 768px) {
+    display: none; /* Hide when user is logged in or on smaller screens */
+  }
+  li {
+    font-size: 14px;
+    color: #44464a;
+    cursor: pointer;
+    &:hover {
+      color: #1a73e8;
+    }
   }
 `;

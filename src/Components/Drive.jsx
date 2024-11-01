@@ -74,15 +74,21 @@ function Drive() {
 }
 
 export default Drive;
-
-// Styled components
+// Styled components with responsive adjustments
 const Container = styled.div`
   flex-grow: 1;
   position: relative;
   display: flex;
   flex-direction: column;
   margin-top: 10px;
-  padding: 15px 30px;
+  padding: 15px 20px;
+
+  @media (max-width: 768px) {
+    padding: 10px 15px;
+  }
+  @media (max-width: 480px) {
+    padding: 5px 10px;
+  }
 `;
 
 const Title = styled.div`
@@ -101,6 +107,10 @@ const Title = styled.div`
     font-weight: 400;
     font-size: 24px;
     color: #202124;
+
+    @media (max-width: 480px) {
+      font-size: 20px;
+    }
   }
 `;
 
@@ -111,6 +121,13 @@ const FileContent = styled.div`
   flex-grow: 1;
   max-height: 100vh;
   margin-bottom: 30px;
+
+  @media (max-width: 768px) {
+    padding-top: 15px;
+  }
+  @media (max-width: 480px) {
+    padding-top: 10px;
+  }
 `;
 
 const SemiTitle = styled.div`
@@ -118,14 +135,39 @@ const SemiTitle = styled.div`
   font-weight: 500;
   text-transform: capitalize;
   color: #5f6368;
+
+  @media (max-width: 480px) {
+    font-size: 12px;
+  }
 `;
 
 const GridContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin: 20px 0;
+  gap: 1rem;
+
+  @media (max-width: 668px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 15px 0;
+  }
+  // @media (max-width: 768px) {
+  //   grid-template-columns: repeat(1, minmax(0, 1fr));
+  //   margin: 15px 0;
+  // }
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 10px 0;
+  }
 `;
 
 const Margin = styled.div`
   margin-top: 10px;
+
+  @media (max-width: 768px) {
+    margin-top: 5px;
+  }
+  @media (max-width: 480px) {
+    margin-top: 2px;
+  }
 `;
