@@ -62,6 +62,8 @@ function Header() {
     navigate("/login");
   };
 
+  console.log("photo", photo, userUid);
+
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
@@ -89,14 +91,14 @@ function Header() {
 
             {/* <Settings className="icon" /> */}
             <Apps className="icon" />
-            <div>
-              <IconButton onClick={handleAvatarClick}>
+            <div className="flex items-center gap-2">
+              <div onClick={handleAvatarClick}>
                 <img
                   src={photo}
                   alt="User Avatar"
                   className="w-8 h-8 rounded-full cursor-pointer"
                 />
-              </IconButton>
+              </div>
               <ExpandMoreOutlinedIcon
                 onClick={handleAvatarClick}
                 className="-ml-2"
@@ -151,7 +153,7 @@ export default Header;
 const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: ${({ userUid }) => (userUid ? "space-between" : "initial")};
+  justify-content: space-between;
   gap: 1rem;
   padding: 2px 16px;
   height: 60px;
@@ -275,6 +277,7 @@ const MenuItem = styled.div`
 
 const ResponsiveMenu = styled.ul`
   display: flex;
+  margin-right: auto;
   gap: 10px;
   text-align: center;
   color: #5f6368;
