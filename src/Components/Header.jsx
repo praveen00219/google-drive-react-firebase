@@ -14,62 +14,46 @@ import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 import { Avatar, Popover, Typography, IconButton } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  selectPhoto,
-  selectUid,
-  setLogIn,
-  setLogOut,
-} from "../Slices/user/userSlice";
-
+import { selectPhoto, selectUid, setLogOut } from "../Slices/user/userSlice";
+import { auth } from "../firebase/firebase"; // Import Firebase auth
 import logo from "../assets/google-logo.png";
 
-import ImageSliderModal from "./ImageSliderModal"; // import the modal component
-// import image1 from "../assets/image1.jpg"; // replace with actual paths
-// import image2 from "../assets/image2.jpg";
-// import image3 from "../assets/image3.jpg";
+import ImageSliderModal from "./ImageSliderModal"; // Import modal component
 
 function Header() {
   const dispatch = useDispatch();
-  const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isHelpModalOpen, setHelpModalOpen] = useState(false);
 
   const photo = useSelector(selectPhoto);
   const userUid = useSelector(selectUid);
 
-  // Inside your Header function
-  const images = [];
-  const [isHelpModalOpen, setHelpModalOpen] = useState(false);
-
-  const handleHelperModel = () => {
-    setHelpModalOpen(true);
+  const togglePopover = (event) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
-  const closeHelpModal = () => {
-    setHelpModalOpen(false);
+  const handleLogOut = async () => {
+    try {
+      await auth.signOut(); // Sign out from Firebase
+      dispatch(setLogOut({ uid: null, photo: null })); // Clear Redux state
+      setAnchorEl(null);
+      navigate("/login"); // Redirect to login
+    } catch (error) {
+      console.error("Logout failed:", error);
+      alert("Failed to log out. Please try again.");
+    }
   };
 
-  const handleAvatarClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleLogOut = () => {
-    dispatch(setLogOut({ uid: null, photo: null }));
-    setAnchorEl(null);
-    navigate("/login");
-  };
-
-  console.log("photo", photo, userUid);
+  const handleHelperModal = () => setHelpModalOpen(true);
+  const closeHelperModal = () => setHelpModalOpen(false);
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
   return (
     <HeaderContainer>
-      <Link to="/drive">
+      <Link to="/home">
         <LogoContainer>
           <img src={logo} alt="Drive Logo" />
           <span>Drive</span>
@@ -86,21 +70,25 @@ function Header() {
 
           <IconsContainer>
             <CheckCircleOutline className="checkIcon" />
-
-            <HelpOutline className="helpIcon" onClick={handleHelperModel} />
-
-            {/* <Settings className="icon" /> */}
+            <HelpOutline className="helpIcon" onClick={handleHelperModal} />
             <Apps className="icon" />
             <div className="flex items-center gap-2">
-              <div onClick={handleAvatarClick}>
+              <div
+                aria-controls={open ? "simple-popover" : undefined}
+                aria-haspopup="true"
+                onClick={togglePopover}
+              >
                 <img
-                  src={photo}
+                  src={
+                    photo ||
+                    "https://cdn-icons-png.flaticon.com/128/3177/3177440.png"
+                  }
                   alt="User Avatar"
                   className="w-8 h-8 rounded-full cursor-pointer"
                 />
               </div>
               <ExpandMoreOutlinedIcon
-                onClick={handleAvatarClick}
+                onClick={togglePopover}
                 className="-ml-2"
               />
             </div>
@@ -110,7 +98,7 @@ function Header() {
             id={id}
             open={open}
             anchorEl={anchorEl}
-            onClose={handleClose}
+            onClose={() => setAnchorEl(null)}
             anchorOrigin={{
               vertical: "bottom",
               horizontal: "right",
@@ -140,9 +128,9 @@ function Header() {
 
       {/* Image Slider Modal for Helper */}
       <ImageSliderModal
-        images={images}
+        images={[]}
         open={isHelpModalOpen}
-        onClose={closeHelpModal}
+        onClose={closeHelperModal}
       />
     </HeaderContainer>
   );
@@ -162,10 +150,6 @@ const HeaderContainer = styled.div`
   @media (max-width: 768px) {
     padding: 8px;
   }
-  // @media (max-width: 480px) {
-  //   flex-direction: column;
-  //   height: auto;
-  // }
 `;
 
 const LogoContainer = styled.div`
@@ -282,7 +266,7 @@ const ResponsiveMenu = styled.ul`
   text-align: center;
   color: #5f6368;
   @media (max-width: 768px) {
-    display: none; /* Hide when user is logged in or on smaller screens */
+    display: none;
   }
   li {
     font-size: 14px;

@@ -3,43 +3,59 @@ import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setBoolean } from "../Slices/Bool/boolSlice";
-import { Folder, Computer, AccessTime, Report } from "@mui/icons-material";
+import {
+  Folder,
+  Computer,
+  AccessTime,
+  Report,
+  Menu as MenuIcon,
+  Close,
+} from "@mui/icons-material";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import FilterDramaIcon from "@mui/icons-material/FilterDrama";
-import MenuIcon from "@mui/icons-material/Menu";
 
-import addButton from "../assets/AddButton.webp";
-
-function Sidebar() {
+function Sidebar({ onSidebarToggle }) {
   const dispatch = useDispatch();
   const [isMinimized, setIsMinimized] = useState(false);
 
   const toggleSidebar = () => {
     setIsMinimized((prev) => !prev);
+    onSidebarToggle(!isMinimized); // Notify parent of the toggle state
   };
+
+  const usedStorage = "100 Mb";
+  const totalStorage = "15 GB";
 
   return (
     <SidebarContainer isMinimized={isMinimized}>
-      <ToggleContainer onClick={toggleSidebar}>
-        <MenuIcon />
+      <ToggleContainer onClick={toggleSidebar} aria-label="Toggle Sidebar">
+        {isMinimized ? (
+          <MenuIcon className="mr-2" />
+        ) : (
+          <CloseIcon>
+            <Close
+              onClick={() => {
+                dispatch(setBoolean({ photo: false }));
+                setSelectedImage(null);
+              }}
+            />
+          </CloseIcon>
+        )}
       </ToggleContainer>
 
-      {/* <NewChannel
-        onClick={() => dispatch(setBoolean({ modelBools: true }))}
-        isMinimized={isMinimized}
+      <NewChannel
+        onClick={() => {
+          dispatch(setBoolean({ modelBools: true }));
+        }}
       >
-        <span>New</span>
-      </NewChannel> */}
-
-      <NewChannel onClick={() => dispatch(setBoolean({ modelBools: true }))}>
-        <span onClick={() => dispatch(setBoolean({ modelBools: true }))}></span>
+        <span></span>
         {!isMinimized && <p>New</p>}
       </NewChannel>
 
-      <NavItem to="/home" exact="true" isMinimized={isMinimized}>
+      <NavItem to="/" end isMinimized={isMinimized}>
         <HomeOutlinedIcon className="icon" />
         {!isMinimized && <span>Home</span>}
       </NavItem>
@@ -79,11 +95,13 @@ function Sidebar() {
       </NavItem>
 
       <StorageContainer isMinimized={isMinimized}>
-        <ProgressBar />
-        {!isMinimized && <StorageText>100 Mb of 15 GB used</StorageText>}
+        <ProgressBar usage="20%" />
+        {!isMinimized && (
+          <StorageText>
+            {usedStorage} of {totalStorage} used
+          </StorageText>
+        )}
       </StorageContainer>
-
-      {!isMinimized && <GetStorageButton>Get more storage</GetStorageButton>}
     </SidebarContainer>
   );
 }
@@ -91,18 +109,36 @@ function Sidebar() {
 export default Sidebar;
 
 const SidebarContainer = styled.div`
-  width: ${(props) => (props.isMinimized ? "60px" : "220px")};
+  width: ${(props) => (props.isMinimized ? "60px" : "185px")};
   padding: 10px 0;
-  margin-left: 20px;
-  font-family: Arial, sans-serif;
-  transition: width 0.3s ease;
+  transition: width 0.3s ease-in-out;
+  background: #f4f4f4;
+  max-height: 92vh;
 `;
 
 const ToggleContainer = styled.div`
   display: flex;
-  // justify-content: center;
+  align-items: center;
+  justify-content: end;
   cursor: pointer;
-  margin-bottom: 20px;
+  gap: 0.4rem;
+  font-size: 1.2rem;
+  margin: 0 10px 20px 0;
+`;
+
+const CloseIcon = styled.div`
+  svg {
+    cursor: pointer;
+    width: 1.2rem;
+    height: 1.2rem;
+    color: rgba(150, 0, 0, 0.9);
+    :hover {
+      transform: scale(1.05);
+    }
+    :active {
+      transform: scale(1.009);
+    }
+  }
 `;
 
 const NewChannel = styled.div`
@@ -114,10 +150,10 @@ const NewChannel = styled.div`
   background-color: white;
   border-radius: 24px;
   padding: 2px;
-  margin-bottom: 20px;
+  margin: 0 10px 20px 10px;
   cursor: pointer;
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 01);
-  transition: all 500ms ease-out;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  transition: all 300ms ease-out;
 
   &:hover {
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -136,53 +172,50 @@ const NewChannel = styled.div`
     }
   }
 `;
-
 const NavItem = styled(NavLink)`
   display: flex;
   align-items: center;
   padding: 5px 16px;
-  font-size: 14px;
-  color: #202124;
-  cursor: pointer;
-  border-radius: 40px;
-  transition: background-color 0.2s ease, padding 0.3s ease;
   text-decoration: none;
+  color: #202124;
+  border-radius: 8px;
+  margin-bottom: 10px;
 
   .icon {
     margin-right: ${(props) => (props.isMinimized ? "0" : "10px")};
-    color: #474848;
-  }
-
-  &.active {
-    background-color: #c3e7ff;
   }
 
   &:hover {
     background-color: #e7e9eb;
   }
+
+  &.active {
+    background-color: #c3e7ff;
+  }
 `;
 
 const Divider = styled.div`
   height: 1px;
-  margin: 5px 0;
+  background-color: #d9d9d9;
+  margin: 10px 0;
 `;
 
 const StorageContainer = styled.div`
-  padding: ${(props) => (props.isMinimized ? "0 5px" : "0 16px")};
+  padding: 10px;
   color: #5f6368;
 `;
 
 const ProgressBar = styled.div`
-  width: ${(props) => (props.isMinimized ? "40px" : "85%")};
   height: 6px;
   background-color: #e0e0e0;
   border-radius: 3px;
   margin: 10px 0;
+  width: 100%;
 
   &::before {
     content: "";
     display: block;
-    width: 8%;
+    width: ${(props) => props.usage};
     height: 100%;
     background-color: #1a73e8;
     border-radius: 3px;
@@ -191,22 +224,4 @@ const ProgressBar = styled.div`
 
 const StorageText = styled.div`
   font-size: 12px;
-`;
-
-const GetStorageButton = styled.button`
-  display: block;
-  width: calc(80% - 32px);
-  margin: 13px 16px;
-  padding: 8px 0;
-  font-size: 14px;
-  color: #1a73e8;
-  background: transparent;
-  border: 1px solid #1a73e8;
-  border-radius: 40px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: rgba(26, 115, 232, 0.1);
-  }
 `;
